@@ -1,0 +1,69 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sb
+
+from google.colab import files
+data = files.upload()
+
+housing = pd.read_csv('USA_Housing.csv')
+housing.head()
+
+housing.info()
+
+housing.drop('Address',axis=1,inplace=True)
+
+housing.head()
+
+housing.corr()*100
+
+#SPLIT THE DATA INTO THE X AND Y
+
+housing.head()
+
+x = housing[['Avg. Area Income','Avg. Area House Age','Avg. Area Number of Rooms',
+            'Avg. Area Number of Bedrooms','Area Population']]
+
+y = housing['Price']
+
+x.head()
+
+y.head()
+
+# Horizontal Split : 70% Data for training and 30% for Testing
+
+from sklearn.model_selection import train_test_split
+
+X_train,X_test,Y_train,Y_test = train_test_split(x,y,test_size=0.30,random_state=101)
+
+print(X_test.shape)
+
+print(X_train.shape)
+
+print(Y_train.shape)
+
+print(Y_test.shape)
+
+# Training the model
+
+from sklearn.linear_model import LinearRegression
+
+lm = LinearRegression()
+
+lm.fit(X_train,Y_train)
+
+# Prediction
+
+predict = lm.predict(X_test)
+
+predict
+
+plt.scatter(Y_test,predict)
+
+from sklearn import metrics
+
+print('Mean Absolute Error',metrics.mean_absolute_error(Y_test,predict))
+
+print('Mean Square Error',metrics.mean_squared_error(Y_test,predict))
+
+print('Mean Square root error',np.sqrt(metrics.mean_squared_error(Y_test,predict)))
